@@ -1,0 +1,22 @@
+version : 2.21.0
+services :
+  mysqldb :
+    image : mysql:5.7
+    restart: unless-stopped
+    ports :
+      - 3006:3306
+    volumes :
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+  achat :
+    depends_on:
+      - mysqldb
+    build: ./
+    restart: on-failure
+    ports :
+      - 8089:8089
+    stdin_open: true
+    tty: true
+volumes :
+  db :
