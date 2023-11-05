@@ -1,5 +1,5 @@
-version : 2.21.0
-services :
+version: '3'
+services:
   mysqldb:
     image: mysql:5.7
     restart: unless-stopped
@@ -10,22 +10,31 @@ services :
       - 3306:3306
     volumes:
       - db:/var/lib/mysql
-  achat :
+
+  achat:
     depends_on:
       - mysqldb
-    build: ./
+    build: balha008/achat:1.0.0
     restart: on-failure
-    ports :
+    ports:
       - 8089:8089
     environment:
       SPRING_APPLICATION_JSON: '{
-        "spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/achatdb?useSSL=false&createDatabaseIfNotExist=true",
-        "spring.datasource.username" : "root",
-        "spring.datasource.password" : "",
-        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
-        "spring.jpa.hibernate.ddl-auto" : "update" }'
+        "spring.datasource.url": "jdbc:mysql://mysqldb:3306/achatdb?useSSL=false&createDatabaseIfNotExist=true",
+        "spring.datasource.username": "root",
+        "spring.datasource.password": "",
+        "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.MySQL5InnoDBDialect",
+        "spring.jpa.hibernate.ddl-auto": "update"      }'
     stdin_open: true
     tty: true
 
+  achat_front:
+    depends_on:
+      - mysqldb
+    image: balha008/achat_front:1.0.0
+    restart: on-failure
+    ports:
+      - 80:80
+
 volumes:
-  db :
+  db:
